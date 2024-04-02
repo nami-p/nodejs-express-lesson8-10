@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import Users from "../models/user.model.js";
+import Users, { generateToken } from "../models/user.model.js";
 
 export const SignIn = async (req, res) => {
 
@@ -15,7 +15,9 @@ export const SignIn = async (req, res) => {
                 return res.send(new Error(err.message));
 
             if (same) {
-                return res.send({ user });
+                const token=generateToken(user);
+                user.password = "****";
+                return res.send({ user ,token});
             }
 
 
@@ -33,8 +35,13 @@ export const SignUp = async (req,res) => {
 
     try {
         const newuser = new Users({ username, email, password });
-        await newuser.save(); 
-        return res.status(201).json(newuser);
+        
+        await newuser.save();
+
+        const token = generateToken(user);
+        newuser.password="****";
+
+        return res.status(201).json(newuser,token);
     } catch (error) {
         return next({ message: error.message, status: 409 })
     }

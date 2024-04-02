@@ -4,6 +4,7 @@ import router  from "./Routes/book.route.js";
 // import router as userRouter from "./Routes/user.route.js";
 import cors from 'cors';
 import {config} from 'dotenv';
+import serverNotFound from './middle wares/errorsMW.js'
 config()
 
 const app = express();
@@ -23,7 +24,7 @@ app.use('/books', router);
 app.use('/users', userRouter);
 
 // app.use(pageNotFound);
-// app.use(serverNotFound);
+app.use(serverNotFound);
 
 
 const port = 5000;
